@@ -4,9 +4,6 @@
 # Simulate a Minecraft Enchant Table
 # https://minecraft.gamepedia.com/Tutorials/Enchantment_mechanics
 
-bookshelves = 15 # 0 to 15
-slot = 3 # 1(top) to 3(bottom)
-
 def max(a,b)
   (a>b) ? a : b
 end
@@ -15,31 +12,30 @@ def min(a,b)
   (a<b) ? a : b
 end
 
-def base_enchant(books, slot)
-  base = (rand(8)+1) + (books/2) + rand(books).to_i
-  case slot
+def base_enchant(active_books, gui_slot)
+  base = (rand(8)+1) + (active_books/2) + rand(active_books).to_i
+  case gui_slot
   when 1, :top
     max(base / 3, 1)
   when 2, :middle
     base * 2 / 3 + 1
   when 3, :bottom
-    max(base, books*2)
+    max(base, active_books*2)
   else
     -1
   end
 end
 
-# "commented out" testing code
-if nil
-(0..15).each do |b|
-  [:top, :middle, :bottom].each do |s|
-    (1..100).each do
-      puts "(#{b},#{s}) => #{base_enchant(b,s)}"
+def print_base_enchant
+  (0..15).each do |b|
+    [:top, :middle, :bottom].each do |s|
+      (1..100).each do
+        puts "(#{b},#{s}) => #{base_enchant(b,s)}"
+      end
     end
   end
 end
-end
-
+#print_base_enchant
 
 def enchantablity (material, item)
 
@@ -70,39 +66,39 @@ def enchantablity (material, item)
   end
 end
 
-# "commenting" out more debugging code
-if nil
-[:armor,:tool].each do |i|
-  [:wood,:leather,:stone,:iron,:chain,:diamond,:gold,:book].each do |m|
-    puts "#{i},#{m} => #{enchantablity(m,i)}"
+def print_enchantibility_table
+  [:armor,:tool].each do |i|
+    [:wood,:leather,:stone,:iron,:chain,:diamond,:gold,:book].each do |m|
+      puts "#{i},#{m} => #{enchantablity(m,i)}"
+    end
   end
 end
-end
+#print_enchantibility_table
 
 def r (e)
   rand(e/4+1)
 end
 
+bookshelves = 15 # 0 to 15
+slot = 3 # 1(:top), 3(:middle), 3(:bottom)
 #e=enchantablity(:iron, :armor)
 e=enchantablity(:diamond, :armor)
 e=enchantablity(:iron, :tool)
-b=base_enchant(15,3) # max enchant, for now at least
+b=base_enchant(bookshelves, slot)
 
-(0..999).each do
-  ri1=r(e)
-  ri2=r(e)
+(0..9).each do
+ri1=r(e)
+ri2=r(e)
 l = b + ri1 + ri2 + 1
-#puts "L(#{l}) = B(#{b}) + R1(#{ri1}) + R2(#{ri2}) + 1; E=#{e}"
 
 rf1=rand
 rf2=rand
-
 rand_bonus_percent = 1 + ( rf1 + rf2 - 1) * 0.15
-final_level = max( (l * rand_bonus_percent).to_i, 1)
-#puts "FINAL(#{final_level}) = L(#{l}) * (1 + ( RF1(#{rf1}) + RF2(#{rf2}) - 1 ) * .015)"
 
-printf '%i = (%i + %i + %i + 1 ) x ( 1 + ( %3f + %3f -1 ) x 0.015 ) %s', \
+final_level = max( (l * rand_bonus_percent).to_i, 1)
+
+#        f = ( b +  r +  r + 1 ) * ( 1 + (   r +   r - 1 ) * 0.15 ) 
+printf '%i = (%i + %i + %i + 1 ) * ( 1 + ( %3f + %3f - 1 ) * 0.15 )%s', \
   final_level, b, ri1, ri2, rf1, rf2, "\n"
 
-# f = (b +r + r + 1 ) * ( 1 + ( r + r - 1 ) * .015 ) 
 end
