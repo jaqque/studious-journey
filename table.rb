@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-# vim:sw=2:ts=2:expandtab:syn=ruby
+# vim:sw=2:ts=2:nu:expandtab:syn=ruby
 
 # Simulate a Minecraft Enchant Table
 # https://minecraft.gamepedia.com/Tutorials/Enchantment_mechanics
